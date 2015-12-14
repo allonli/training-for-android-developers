@@ -1,4 +1,4 @@
-﻿## chapter-01-Building-Your-First-App
+# chapter-01-Building-Your-First-App
 
 Tags: Training-for-Android-developers
 
@@ -24,7 +24,7 @@ https://dongchuan.gitbooks.io/gradle-user-guide-/content/index.html
 
 ---
 
-### Getting Started
+## Getting Started
 新建一个 android 工程。
 
 activity ，一个 android 界面就是一个activity。它需要一个布局配置。如下：
@@ -70,3 +70,54 @@ match_parent 充满整个父容器边界。
 ### Activity 间传递及拉起
 
 两个界面 （Activity） 之间如果要传值或者一个拉起另一个的操作，都需要 Intent做为媒介（哪怕不传值，只是拉起下游 Activity 也要使用 Intet 源码中这里没有任何处理，只要你不传它就报 NPE）。Intent 特别类似于网络请求中的 Request 对象，如果服务端没接到 Request 对象，后面的业务也不会被拉起。同样的像 Request 一样，Intent 也可以做为信息传递的载体，putExtra方法和 Request 中的 setAttribute 一样。用 K->V 的方式存储信息。
+
+---
+
+## 适配
+```java
+//判断指定版本下才可以运行，柔性可用
+if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+    ActionBar actionBar = getActionBar();
+    actionBar.setDisplayHomeAsUpEnabled(true);
+}
+```
+
+* 有4种普遍尺寸：小(small)，普通(normal)，大(large)，超大(xlarge)
+* 4种普遍分辨率：低精度(ldpi), 中精度(mdpi), 高精度(hdpi), 超高精度(xhdpi)
+
+**layout\国际化(语言)\图片 这些差别都是用目录来区分的。系统会根据设置或者默认拉起对应的配置。**
+
+
+## Activity 的生命周期
+
+ 
+![图1][1]上图显示：当用户离开我们的activity时，系统会调用onStop()来停止activity (1). 这个时候如果用户返回，系统会调用onRestart()(2), 之后会迅速调用onStart()(3)与onResume()(4). 请注意：无论什么原因导致activity停止，系统总是会在onStop()之前调用onPause()方法。
+
+* onResume: 初始化操作一般在这里做，onCreate 不要初始化太多东西，不然打开应用会很久看不到界面。
+* onStop: 当 activity 隐藏以后要执行的heavy-load操作一般会在 onStop 中。不要把heavy-load操作放到 onPasue 这样会影响界面切换速度。写 DB 建议在此方法中实现。
+
+几种会调用onDestroy的情况:
+
+>*  用户点击 back 按钮
+>*  程序里调用了 finish() 方法
+>*  资源紧张时（后台长期 stop 状态或者前台需要更多内存），系统可能会干掉它。系统在 destroy 时把现场存到一个 Bundle 对象中的键值对中(instance state)，当用户要回到这个 Activity 时，系统会重建一个 Activity 实例（此 Activity 已是物是人非，非彼 Activity!）
+>*  Activity 会在每次旋转屏幕时被 destroyed 与 recreated 。当屏幕改变方向时，系统会 Destory 与 Recreate 前台的 activity ，因为屏幕配置被改变，Activity 可能需要加载另一些替代的资源(例如layout)。为了让所有信息顺利
+
+
+![图2][2]
+**调用 onSaveInstanceState 的时机：**
+onSaveInstanceState()的调用遵循一个重要原则，即当系统存在“未经你许可”时销毁了我们的activity的**可能**时，则onSaveInstanceState()**可能**会被系统调用，这是系统的责任，因为它必须要提供一个机会让你保存你的数据（当然你不保存那就随便你了）。如果调用，调用将发生在onPause()或onStop()方法之前。
+　1. 用户按下HOME键时。
+　2. 长按HOME键，选择运行其他的程序时。
+　3. 按下电源按键（关闭屏幕显示）时。
+　4. 从activity A中启动一个新的activity时。
+　5. 屏幕方向切换时，例如从竖屏切换到横屏时。
+
+**调用 onRestoreInstanceState 的时机：**
+只有在Activity真的被系统非正常干掉过，恢复显示Activity的时候，才会调用onRestoreInstanceState。
+
+
+
+
+  [1]: http://developer.android.com/images/training/basics/basic-lifecycle-paused.png
+  [2]: http://developer.android.com/images/training/basics/basic-lifecycle-savestate.png
