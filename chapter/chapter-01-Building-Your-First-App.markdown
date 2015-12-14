@@ -125,6 +125,8 @@ onSaveInstanceState()的调用遵循一个重要原则，即当系统存在“�
 
 Fragment是为了activity的模块化而出现的概念，它拥有自己的生命周期，接收自己的输入事件，可以在acvitity运行过程中添加或者移除（有点像"子activity"，可以在不同的activity里面重复使用，当通过XML布局文件的方式将Fragment添加进activity时，Fragment是不能被动态移除的。如果想要在用户交互的时候把fragment切入与切出，必须在activity启动后，再将fragment添加进activity。）。
 
+![图4][4]
+
 * 为了执行fragment的增加或者移除操作，必须通过 FragmentManager 创建一个FragmentTransaction对象,FragmentTransaction提供了用来增加、移除、替换以及其它一些操作的APIs。
 
 * 如果我们的activity允许fragment移除或者替换，我们应该在activity的onCreate()方法中添加初始化fragment(s).
@@ -134,8 +136,92 @@ Fragment是为了activity的模块化而出现的概念，它拥有自己的生�
 ```java
 transaction.addToBackStack(null);
 ```
-移除或者替换Fragment，如果要适当地让用户可以向后导航与"撤销"这次改变。为了让用户向后导航fragment事务，我们必须在FragmentTransaction提交前调用addToBackStack()方法。（如果不加到栈顶，点返回键如果栈里没东西，会直接返回到桌面）
+移除或者替换Fragment，如果要适当地让用户可以向后导航与"撤销"这次改变。为了让用户向后导航fragment事务，我们必须在FragmentTransaction提交前调用addToBackStack()方法。（如果不加到栈顶，点返回键栈里没东西时，会直接返回到桌面）
+
+  
+## 数据持久化
+为了能方便这里的实验，手机root以后。可以用以下两种方式查看系统文件：
+
+>* 手机连usb后将android sdk的platform加到PATH中，执行adb shell，su - root。就可以切到root下，为所欲为（君子有所为有所不为）。
+>* 也可以在手机端安装一个ssh server软件（如：SSHDriodPro）,启动服务，在确认软件拿到root权限同时pc和手机在相同网段后，pc上使用ssh root@[ip] -p [port]连上，再su - root。效果同上。
+
+### 保存到Preference
+preference有些类似cookie。每个Prefernece文件就是存一些k->v。
+
+* getSharedPreferences() 可以取多个带名文件，当文件不存在的时间，get时会自动创建。
+* getPreference() 不需要名，只取一个文件。 
+* 当写文件时，Preference的Editor对象要commit一下才会生效。
+
+> 当我们用root登录到手机上，cd /data/data/com.example.android.fragments/ (包名根据具体app配置决定)，之后我们能看到一个叫shared_prefs文件夹。
+进入这个文件夹后看到：MainActivity.xml和preference_file_key.xml。
+
+
+单个文件，无需指定文件名方式
+```xml
+<!--MainActivity.xml-->
+<?xml version='1.0' encoding='utf-8' standalone='yes' ?>
+<map>
+    <string name="preference">preference1</string>
+</map>
+```
+自己指定文件名来存储
+```xml
+<!--preference_file_key.xml-->
+<?xml version='1.0' encoding='utf-8' standalone='yes' ?>
+<map>
+    <string name="sharedPref">SharedPreferences1</string>
+</map>
+```
+再对比一下代码，司马昭之心路人皆知：***所谓的Preference就是一个xml文件而已***
+```java
+public void saveData(){
+    SharedPreferences sharedPref = getSharedPreferences();
+    SharedPreferences preference = getPreference();
+    
+    if (sharedPref.getString("sharedPref", null) == null) {
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString("sharedPref", "SharedPreferences1");
+        editor.commit();
+    }
+    
+    if (preference.getString("preference", null) == null) {
+        SharedPreferences.Editor editor = preference.edit();
+        editor.putString("preference", "preference1");
+        editor.commit();
+    }
+}
+
+/**
+ * 获取preferences
+ *
+ * @return
+ */
+private SharedPreferences getSharedPreferences() {
+    return getActivity().getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+}
+
+/**
+ * 获取单个文件
+ *
+ * @return
+ */
+private SharedPreferences getPreference() {
+    return getActivity().getPreferences(Context.MODE_PRIVATE);
+}
+```
+
+### 存文件
+
+也可以直接操作文件来读写，分为External和Internal两种文件操作。使用的API都是java操作文件IO的标准API。当写完文件以后，可以用adb在上面提到的shared_prefs同级目录中查看到一个files和caches目录分别存储用来存普通文件和临时文件。
+
+> 在写入文件时，目录是可以指定的。但是一般情况下的权限只能指定自己app所对应的目录。其他程序目录如果强制被chmod授权，当前程序也可以写到那个目录，或者当前程序拿到root权限也可随便写。
+
+### 写DB
+
+    
+
 
   [1]: http://developer.android.com/images/training/basics/basic-lifecycle-paused.png
   [2]: http://developer.android.com/images/training/basics/basic-lifecycle-savestate.png
   [3]: http://developer.android.com/images/fundamentals/fragments.png
+  [4]: http://developer.android.com/images/fragment_lifecycle.png
