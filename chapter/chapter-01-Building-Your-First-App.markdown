@@ -105,6 +105,7 @@ if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 
 
 ![图2][2]
+
 **调用 onSaveInstanceState 的时机：**
 onSaveInstanceState()的调用遵循一个重要原则，即当系统存在“未经你许可”时销毁了我们的activity的**可能**时，则onSaveInstanceState()**可能**会被系统调用，这是系统的责任，因为它必须要提供一个机会让你保存你的数据（当然你不保存那就随便你了）。如果调用，调用将发生在onPause()或onStop()方法之前。
 　1. 用户按下HOME键时。
