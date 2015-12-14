@@ -119,8 +119,23 @@ onSaveInstanceState()的调用遵循一个重要原则，即当系统存在“�
 **调用 onRestoreInstanceState 的时机：**
 只有在Activity真的被系统非正常干掉过，恢复显示Activity的时候，才会调用onRestoreInstanceState。
 
+## Fragments
 
+![图3][3]
 
+Fragment是为了activity的模块化而出现的概念，它拥有自己的生命周期，接收自己的输入事件，可以在acvitity运行过程中添加或者移除（有点像"子activity"，可以在不同的activity里面重复使用，当通过XML布局文件的方式将Fragment添加进activity时，Fragment是不能被动态移除的。如果想要在用户交互的时候把fragment切入与切出，必须在activity启动后，再将fragment添加进activity。）。
+
+* 为了执行fragment的增加或者移除操作，必须通过 FragmentManager 创建一个FragmentTransaction对象,FragmentTransaction提供了用来增加、移除、替换以及其它一些操作的APIs。
+
+* 如果我们的activity允许fragment移除或者替换，我们应该在activity的onCreate()方法中添加初始化fragment(s).
+
+* 运用fragment（尤其是那些在运行时添加的）的一个很重要的规则就是在布局中必须有一个容器View，fragment的layout将会放在这个view里面。
+
+```java
+transaction.addToBackStack(null);
+```
+移除或者替换Fragment，如果要适当地让用户可以向后导航与"撤销"这次改变。为了让用户向后导航fragment事务，我们必须在FragmentTransaction提交前调用addToBackStack()方法。（如果不加到栈顶，点返回键如果栈里没东西，会直接返回到桌面）
 
   [1]: http://developer.android.com/images/training/basics/basic-lifecycle-paused.png
   [2]: http://developer.android.com/images/training/basics/basic-lifecycle-savestate.png
+  [3]: http://developer.android.com/images/fundamentals/fragments.png
