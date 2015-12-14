@@ -91,7 +91,9 @@ if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 ## Activity 的生命周期
 
  
-![图1][1]上图显示：当用户离开我们的activity时，系统会调用onStop()来停止activity (1). 这个时候如果用户返回，系统会调用onRestart()(2), 之后会迅速调用onStart()(3)与onResume()(4). 请注意：无论什么原因导致activity停止，系统总是会在onStop()之前调用onPause()方法。
+![图1][1]
+
+上图显示：当用户离开我们的activity时，系统会调用onStop()来停止activity (1). 这个时候如果用户返回，系统会调用onRestart()(2), 之后会迅速调用onStart()(3)与onResume()(4). 请注意：无论什么原因导致activity停止，系统总是会在onStop()之前调用onPause()方法。
 
 * onResume: 初始化操作一般在这里做，onCreate 不要初始化太多东西，不然打开应用会很久看不到界面。
 * onStop: 当 activity 隐藏以后要执行的heavy-load操作一般会在 onStop 中。不要把heavy-load操作放到 onPasue 这样会影响界面切换速度。写 DB 建议在此方法中实现。
