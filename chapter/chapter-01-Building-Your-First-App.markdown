@@ -131,13 +131,15 @@ Fragment是为了activity的模块化而出现的概念，它拥有自己的生�
 
 * 如果我们的activity允许fragment移除或者替换，我们应该在activity的onCreate()方法中添加初始化fragment(s).
 
-* 运用fragment（尤其是那些在运行时添加的）的一个很重要的规则就是在布局中必须有一个容器View，fragment的layout将会放在这个view里面。
+* fragment其实只是一个虚拟的框，它里面不装东西它就什么也不是。所以必须有一个View把它撑起来（inflate）。
+```java
+inflater.inflate(R.layout.article_view, container, false);
+```
 
+移除或者替换Fragment，如果要适当地让用户可以向后导航与"撤销"这次改变。为了让用户向后导航fragment事务，我们必须在FragmentTransaction提交前调用addToBackStack()方法。（如果不加到栈顶，点返回键栈里没东西时，会直接返回到桌面）
 ```java
 transaction.addToBackStack(null);
 ```
-移除或者替换Fragment，如果要适当地让用户可以向后导航与"撤销"这次改变。为了让用户向后导航fragment事务，我们必须在FragmentTransaction提交前调用addToBackStack()方法。（如果不加到栈顶，点返回键栈里没东西时，会直接返回到桌面）
-
   
 ## 数据持久化
 为了能方便这里的实验，手机root以后。可以用以下两种方式查看系统文件：
@@ -218,7 +220,56 @@ private SharedPreferences getPreference() {
 
 ### 写DB
 
-    
+Android的自带DB规范是sqlite。操作和java中的一些操作DB方式基本相同。DB文件存在/data/data/[应用]/databases下。可以使用sqlite3命令查看。如果手机上没有安装，可以从模拟器中pull出来，再push到手机上。前提是手机得root。
+
+搞定以后直接sqlite3 xxx.db。然后sql语句就ok.
+
+> 在调试过程中，经常会有查询DB中的数据需要。除了命令行，也可以使用一个sqlite editor pro的软件。它可以帮你搜索整个手机中的DB数据，直观查看。
+
+查询
+```java
+//要查哪些列
+String[] projection = {
+        FeedReaderContract.FeedEntry._ID,
+        FeedReaderContract.FeedEntry.COLUMN_NAME_TITLE
+};
+//排序参数，也可以加各种where
+String sortOrder = FeedReaderContract.FeedEntry._ID + " DESC";
+//拿到游标
+Cursor cursor = db.query(
+        FeedReaderContract.FeedEntry.TABLE_NAME,  // The table to query
+        projection,                               // The columns to return
+        null,                                // The columns for the WHERE clause
+        null,                            // The values for the WHERE clause
+        null,                                     // don't group the rows
+        null,                                     // don't filter by row groups
+        sortOrder                                 // The sort order
+);
+//移到头
+cursor.moveToFirst();
+//一般于用do while，判断isLast，然后moveToNext。相当于jdbc中的rs.next()。
+cursor.moveToNext();
+```
+写
+```java
+ContentValues values = new ContentValues();
+values.put(FeedReaderContract.FeedEntry.COLUMN_NAME_ENTRY_ID, i);
+values.put(FeedReaderContract.FeedEntry.COLUMN_NAME_TITLE, "title" + i);
+
+long newRowId = db.insert(FeedReaderContract.FeedEntry.TABLE_NAME, null, values);
+
+list.add(newRowId);
+```
+删除
+```java
+db.delete...
+```
+更新
+```java
+db.update...
+```
+
+
 
 
   [1]: http://developer.android.com/images/training/basics/basic-lifecycle-paused.png
