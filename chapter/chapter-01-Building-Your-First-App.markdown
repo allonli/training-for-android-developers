@@ -262,11 +262,11 @@ list.add(newRowId);
 ```
 删除
 ```java
-db.delete...
+db.delete
 ```
 更新
 ```java
-db.update...
+db.update
 ```
 
 
