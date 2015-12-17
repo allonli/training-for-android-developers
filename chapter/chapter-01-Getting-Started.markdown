@@ -1,4 +1,4 @@
-# chapter-01-Building-Your-First-App
+# chapter-01-Getting-Started
 
 Tags: Training-for-Android-developers
 
