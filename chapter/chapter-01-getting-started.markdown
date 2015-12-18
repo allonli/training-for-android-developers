@@ -110,11 +110,13 @@ if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 
 **调用 onSaveInstanceState 的时机：**
 onSaveInstanceState()的调用遵循一个重要原则，即当系统存在“未经你许可”时销毁了我们的activity的**可能**时，则onSaveInstanceState()**可能**会被系统调用，这是系统的责任，因为它必须要提供一个机会让你保存你的数据（当然你不保存那就随便你了）。如果调用，调用将发生在onPause()或onStop()方法之前。注：如果你kill或者kill -9，系统都不会调用此方法，因为它没机会执行就被干掉了，做不到。
-　1. 用户按下HOME键时。
-　2. 长按HOME键，选择运行其他的程序时。
-　3. 按下电源按键（关闭屏幕显示）时。
-　4. 从activity A中启动一个新的activity时。
-　5. 屏幕方向切换时，例如从竖屏切换到横屏时。
+　
+以下情况都仅仅是可能会触发该方法的，
+>* 用户按下HOME键时。
+>* 长按HOME键，选择运行其他的程序时。
+>* 按下电源按键（关闭屏幕显示）时。
+>* 从activity A中启动一个新的activity时。
+>* 屏幕方向切换时，例如从竖屏切换到横屏时。
 
 **调用 onRestoreInstanceState 的时机：**
 只有在Activity真的被系统非正常干掉过，恢复显示Activity的时候，才会调用onRestoreInstanceState。
