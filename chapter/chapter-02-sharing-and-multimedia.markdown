@@ -29,7 +29,7 @@ shareIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, imageUris);
 shareIntent.setType("image/*");
 startActivity(Intent.createChooser(shareIntent, "Share images to.."));
 ```
-分享多种不同类型的内容，需要使用ACTION_SEND_MULTIPLE与指定到那些数据的URIs列表。分享3张JPEG的图片，那么MIME类型仍然是image/jpeg。如果是不同图片格式的话，应该是用image/*来匹配那些可以接收任何图片类型的activity。如果完全不限格式就是 \*/\*。
+* 分享多种不同类型的内容，需要使用ACTION_SEND_MULTIPLE与指定到那些数据的URIs列表。分享3张JPEG的图片，那么MIME类型仍然是image/jpeg。如果是不同图片格式的话，应该是用image/*。
 
 ### 接收数据
 
