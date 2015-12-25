@@ -63,6 +63,7 @@ match_parent 充满整个父容器边界。
     但是很多情况下，如果给View设置了match_parent的属性，那么上面计算权重时则不是通常的正比，而是反比，也就是权重值大的反而占据空间小)。
     对于所有的View默认的权重是0，如果只设置了一个View的权重大于0，则该View将占据除去别的View本身占据的空间的所有剩余空间。
     因此这里设置EditText的权重为1，使其能够占据除了按钮之外的所有空间。
+    目前全中仅被用在LinearLayout中。
 ```
     
 **总结：权值PK，此消彼长。**
@@ -96,7 +97,7 @@ if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 上图显示：当用户离开我们的activity时，系统会调用onStop()来停止activity (1). 这个时候如果用户返回，系统会调用onRestart()(2), 之后会迅速调用onStart()(3)与onResume()(4). 请注意：无论什么原因导致activity停止，系统总是会在onStop()之前调用onPause()方法。
 
 * onResume: 初始化操作一般在这里做，onCreate 不要初始化太多东西，不然打开应用会很久看不到界面。
-* onStop: 当 activity 隐藏以后要执行的heavy-load操作一般会在 onStop 中。不要把heavy-load操作放到 onPasue 这样会影响界面切换速度。写 DB 建议在此方法中实现。
+* onStop: 当 activity 隐藏以后要执行的heavy-load操作一般会在 onStop 中。不要把heavy-load操作放到 onPasue 这样会影响界面切换速度。写 DB 建议在此方法中实现，任何heavy-load操作再生命周期中执行，要多考虑异步执行，否则容易引起主线程假死。
 
 几种会调用onDestroy的情况:
 
@@ -109,7 +110,7 @@ if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 ![图2][2]
 
 **调用 onSaveInstanceState 的时机：**
-onSaveInstanceState()的调用遵循一个重要原则，即当系统存在“未经你许可”时销毁了我们的activity的**可能**时，则onSaveInstanceState()**可能**会被系统调用，这是系统的责任，因为它必须要提供一个机会让你保存你的数据（当然你不保存那就随便你了）。如果调用，调用将发生在onPause()或onStop()方法之前。注：如果你kill或者kill -9，系统都不会调用此方法，因为它没机会执行就被干掉了，做不到。
+onSaveInstanceState()的调用遵循一个重要原则，即当系统存在“未经你许可”时销毁了我们的activity的**可能**时，则onSaveInstanceState()**可能**会被系统调用，这是系统的责任，因为它必须要提供一个机会让你保存你的数据（当然你不保存那就随便你了）。如果调用，调用将发生在onPause()之后、onStop()方法之前。注：如果你kill或者kill -9，系统都不会调用此方法，因为它没机会执行就被干掉了，做不到。
 　
 以下情况都仅仅是可能会触发该方法的，
 >* 用户按下HOME键时。
@@ -217,6 +218,7 @@ private SharedPreferences getPreference() {
 ### 存文件
 
 也可以直接操作文件来读写，分为External和Internal两种文件操作。使用的API都是java操作文件IO的标准API。当写完文件以后，可以用adb在上面提到的shared_prefs同级目录中查看到一个files和caches目录分别存储用来存普通文件和临时文件。
+写文件不仅可以写到应用/data/data/package_name/files/下，还可以写到外部存储路径，即sdcard中。
 
 > 在写入文件时，目录是可以指定的。但是一般情况下的权限只能指定自己app所对应的目录。其他程序目录如果强制被chmod授权，当前程序也可以写到那个目录，或者当前程序拿到root权限也可随便写。
 
