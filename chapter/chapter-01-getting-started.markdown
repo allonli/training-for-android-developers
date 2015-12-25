@@ -47,7 +47,7 @@ values、layout、menu 目录：
 ### 运行和Activity消息传递
 
 * Andoird中有 View 和 ViewGroup 的概念。View 就是可见的控件，按钮啥的。类似一些GUI里的 Component ， ViewGroup类似一些语言 GUI 里的 Panel。
-* ViewGroup 是不可见的 View 容器而已。为了不使这些 View 散乱和更易管理。把许多 View 放在 ViewGroup  中集中调整它的布局等属性。
+* ViewGroup 是 View 容器而已。为了不使这些 View 散乱和更易管理。把许多 View 放在 ViewGroup  中集中调整它的布局等属性。
     
 wrap_content 根据控件文本等自适应大小。简单来讲：够用就得。
 match_parent 充满整个父容器边界。
