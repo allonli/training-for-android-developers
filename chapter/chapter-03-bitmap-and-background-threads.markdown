@@ -52,7 +52,7 @@ An IntentService has a few limitations:
 3. 建一个Receiver，并实现回调。
 4. 把Receiver注册上。（把冰箱门关上）
 
-### A Single Thread, Let's Go !
+#### Let's Go !
 
 1. 创建一个IntentService class
 ```xml
