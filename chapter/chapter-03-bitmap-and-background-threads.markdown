@@ -47,14 +47,15 @@ An IntentService has a few limitations:
 >* **这么一大堆，其实就是在说：这只是一个方便使用的单线程。**
 
 主线程拉起一个Inservice线程，并和IntentService来来回回没完没了的交互。总（long）共分四步：
-1. 建一个IntentService子类，实现里面的回调方法onHandleIntent。
-2. 在主线程创建一个IntentService子类的对象。并拉起来。
-3. 建一个Receiver，并实现回调。
-4. 把Receiver注册上。（把冰箱门关上）
+
+* 建一个IntentService子类，实现里面的回调方法onHandleIntent。
+* 在主线程创建一个IntentService子类的对象。并拉起来。
+* 建一个Receiver，并实现回调。
+* 把Receiver注册上。（把冰箱门关上）
 
 #### Let's Go !
 
-1. 创建一个IntentService class
+1, 创建一个IntentService class
 ```xml
 <application
     android:icon="@drawable/icon"
@@ -81,7 +82,7 @@ public class RSSPullService extends IntentService {
     }
 }
 ```
-2. 创建一个具体的Intent对象，并用来启动IntentService。
+2, 创建一个具体的Intent对象，并用来启动IntentService。
 ```java
 /*
  * Creates a new Intent to start the RSSPullService
@@ -93,7 +94,7 @@ mServiceIntent.setData(Uri.parse(dataUrl));
 // Let's go!
 getActivity().startService(mServiceIntent);
 ```
-3. 如果需要发送数据给主线程
+3, 如果需要发送数据给主线程
 ```java
 Intent localIntent = new Intent(Constants.BROADCAST_ACTION);
 // Puts the status into the Intent
@@ -119,7 +120,7 @@ private class ResponseReceiver extends BroadcastReceiver
     }
 }
 ```
-4. 即使有了receiver类，如果想要收到子线程发的消息。还要让程序知道，接收什么样的消息，用谁来接收。
+4, 即使有了receiver类，如果想要收到子线程发的消息。还要让程序知道，接收什么样的消息，用谁来接收。
 ```java
 // 接收什么样的消息
 IntentFilter statusIntentFilter = new IntentFilter(Constants.BROADCAST_ACTION);
