@@ -131,3 +131,11 @@ mDownloadStateReceiver = new ResponseReceiver();
 LocalBroadcastManager.getInstance(this).registerReceiver(mDownloadStateReceiver, statusIntentFilter);
 ```
 
+### 点亮屏幕
+
+```java
+getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+//清除flag回到正常状态
+getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+```
+也可以AndroidManifest.xml里定义该属性，由于在AndroidManifest里定义的内容不能动态改变。所以设了就不能反悔。
