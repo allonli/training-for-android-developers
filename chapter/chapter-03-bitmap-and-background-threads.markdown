@@ -100,7 +100,7 @@ Intent localIntent = new Intent(Constants.BROADCAST_ACTION);
 localIntent.putExtra(Constants.EXTENDED_DATA_STATUS, status);
 oadcastManager.getInstance(this).sendBroadcast(localIntent);
 ```
-3. 定义主线程接收消息的类，需要一个BroadcastReceiver的子类。并复写onReceive。
+定义主线程接收消息的类，需要一个BroadcastReceiver的子类。并复写onReceive。
 ```java
 // Broadcast receiver for receiving status updates from the IntentService
 private class ResponseReceiver extends BroadcastReceiver
