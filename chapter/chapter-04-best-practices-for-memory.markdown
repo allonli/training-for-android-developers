@@ -1,4 +1,4 @@
-﻿# chapter-04-best-practices-for-memory
+# chapter-04-best-practices-for-memory
 
 Tags:Training-for-Android-developers
 
@@ -16,9 +16,11 @@ Android没有使用Linux中的swap的文件交换区方式。但是还是使用�
     
 具体过程是：
 
-        开机后系统会通过init.rc配置（例如小米4：service zygote /system/bin/app_process -Xzygote /system/bin --zygote --start-system-server）先拉起Zygote进程，这个进程启动后自动加载android框架代码和资源（例如activity themes）然后再fork出具体的app进程，那这样一来就可以让所有的android app进程共享框架load的内存资源。
+    1、开机后系统会通过init.rc配置（例如小米4：service zygote /system/bin/app_process -Xzygote /system/bin --zygote --start-system-server）先拉起Zygote进程
+    2、这个进程启动后自动加载android框架代码和资源（例如activity themes）
+    3、然后再fork出具体的app进程，那这样一来就可以让所有的android app进程共享框架load的内存资源。
 
->* 大多数静态数据被映射到进程中。这样让的数据在进程间共享。
+大多数静态数据被映射到进程中。这样让的数据在进程间共享。
 
     静态数据包括：
     1、Dalvik 代码 (放在一个预链接好的.odex 文件中以便直接mapping)
