@@ -139,3 +139,7 @@ getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 ```
 也可以AndroidManifest.xml里定义该属性，由于在AndroidManifest里定义的内容不能动态改变。所以设了就不能反悔。
+
+上述点亮屏幕的方式比较适合Activity中配合生命周期调用点亮和关闭屏幕，其实也是对WakeLock机制的一种封装。
+但有时需要在Service中控制点亮屏幕就需要用到更原始的WakeLock机制，但由于控制比较直接，所以已定要做好释放。
+
