@@ -124,6 +124,9 @@ Android为播放音乐，闹铃，通知铃，来电声音，系统声音，打�
 AudioManager am = (AudioManager)activity.getSystemService(Context.AUDIO_SERVICE);
 setVolumeControlStream(AudioManager.STREAM_MUSIC);
 ```
+大多数时候使用MediaPlayer或者SoundPool来播放音频。
+AudioManger作为一个总的音频主管来管理各种情况的音量，或者同时播放的音频焦点。
+
 为了防止多个音乐播放应用同时播放音频，Android使用音频焦点（Audio Focus）来控制音频的播放——即只有获取到音频焦点的应用才能够播放音频。requestAudioFocus()方法可以获取我们希望得到的音频流焦点。
 
 短暂的焦点锁定：当计划播放一个短暂的音频时使用（比如播放导航指示）。
