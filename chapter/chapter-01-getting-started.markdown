@@ -43,6 +43,30 @@ gradle 配置文件：
 values、layout、menu 目录：
 
     values 目录常放一些数字和字符串的值，就是一些存值的配置。类似于 properties 文件。另外两个见名知义。
+
+### Activity及其四种状态
+Activity启动模式设置：
+
+        <activity android:name=".MainActivity" android:launchMode="standard" />
+
+Activity的四种启动模式：
+
+    1. standard
+
+        默认启动模式，每次激活Activity时都会创建Activity，并放入任务栈中，永远不会调用onNewIntent()。
+
+    2. singleTop
+
+        如果在任务的栈顶正好存在该Activity的实例， 就重用该实例，并调用其onNewIntent()，否者就会创建新的实例并放入栈顶(即使栈中已经存在该Activity实例，只要不在栈顶，都会创建实例，而不会调用onNewIntent()，此时就跟standard模式一样)。
+
+    3. singleTask
+
+        如果在栈中已经有该Activity的实例，就重用该实例(会调用实例的onNewIntent())。重用时，会让该实例回到栈顶，因此在它上面的实例将会被移除栈。如果栈中不存在该实例，将会创建新的实例放入栈中（此时不会调用onNewIntent()）。 
+
+    4. singleInstance
+
+        在一个新栈中创建该Activity实例，并让多个应用共享改栈中的该Activity实例。一旦改模式的Activity的实例存在于某个栈中，任何应用再激活改Activity时都会重用该栈中的实例，其效果相当于多个应用程序共享一个应用，不管谁激活该Activity都会进入同一个应用中。
+
     
 ### 运行和Activity消息传递
 
@@ -64,8 +88,6 @@ match_parent 充满整个父容器边界。
     对于所有的View默认的权重是0，如果只设置了一个View的权重大于0，则该View将占据除去别的View本身占据的空间的所有剩余空间。
     因此这里设置EditText的权重为1，使其能够占据除了按钮之外的所有空间。
     目前全中仅被用在LinearLayout中。
-    
-    这里weight的值不仅仅可以是整数，还可以是小数，如第一个是0.6，第二个是0.2，那么第一个占据3/4的空间，第二个占据1/4的空间，这里还有比较有意思的是结合weightSum（权重总和）来使用，如当LinearLayout设置为0.7，第一个是0.6，第二个是0.2，那么这时候第一个占据6/7的空间，第二个将会占据1/7的空间。
 ```
     
 **总结：权值PK，此消彼长。**
@@ -112,7 +134,7 @@ if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 ![图2][2]
 
 **调用 onSaveInstanceState 的时机：**
-onSaveInstanceState()的调用遵循一个重要原则，即当系统存在“未经你许可”时销毁了我们的activity的**可能**时，则onSaveInstanceState()**可能**会被系统调用，这是系统的责任，因为它必须要提供一个机会让你保存你的数据（当然你不保存那就随便你了）(或者说系统销毁Activity并且有可能重新显示该界面的情况下会调用该方法)。如果调用，调用将发生在onPause()之后、onStop()方法之前。注：如果你kill或者kill -9，系统都不会调用此方法，因为它没机会执行就被干掉了，做不到。
+onSaveInstanceState()的调用遵循一个重要原则，即当系统存在“未经你许可”时销毁了我们的activity的**可能**时，则onSaveInstanceState()**可能**会被系统调用，这是系统的责任，因为它必须要提供一个机会让你保存你的数据（当然你不保存那就随便你了）。如果调用，调用将发生在onPause()之后、onStop()方法之前。注：如果你kill或者kill -9，系统都不会调用此方法，因为它没机会执行就被干掉了，做不到。
 　
 以下情况都仅仅是可能会触发该方法的，
 >* 用户按下HOME键时。
